@@ -1,5 +1,6 @@
 // Prepare textures once
 let texture1 = loadTexture("assets/cvlt-game-art-greatwalll1.jpg");
+let texture2 = loadTexture("assets/wall1.png");
 
 // Create scene
 let scene = new Scene();
@@ -7,7 +8,7 @@ let scene = new Scene();
 let cube1 = new Cube(0, 0, -7, 1, 1, 1, texture1);
 let cube2 = new Cube(2, 0.5, -10, 1, 2, 0.5, texture1);
 
-let plain1 = new Plain(1, 0, -9, 6, 6, texture1, 1.55);
+let plain1 = new Plain(1, 0, -9, 10, 10, texture2, 1.55);
 
 scene.objects = [cube1, cube2, plain1];
 

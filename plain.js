@@ -31,7 +31,7 @@ class Plain {
         this.vertices = [...plainVertices];
 
         // How many times to repeat per unit
-        let repeatPerUnit = .5; // tile per 1 unit length
+        let repeatPerUnit = .7; // tile per 1 unit length
 
         this.textureCoordinates = [
             0.0, 0.0,

@@ -1,0 +1,122 @@
+const K = {
+    r: false,
+    l: false,
+    u: false,
+    d: false,
+
+    W: false,
+    A: false,
+    S: false,
+    D: false,
+    Q: false,
+    E: false,
+};
+
+let movVel = 0.06;
+let rotVel = 0.025;
+
+document.addEventListener('keydown', (e) => {
+    switch (e.key) {
+        case 'ArrowUp':
+            if (!K.d) K.u = true;
+            break;
+        case 'ArrowLeft':
+            if (!K.r) K.l = true;
+            break;
+        case 'ArrowRight':
+            if (!K.l) K.r = true;
+            break;
+        case 'ArrowDown':
+            if (!K.u) K.d = true;
+            break;
+
+        case 'w':
+            if (!K.S) K.W = true;
+            break;
+        case 'a':
+            if (!K.D) K.A = true;
+            break;
+        case 's':
+            if (!K.W) K.S = true;
+            break;
+        case 'd':
+            if (!K.A) K.D = true;
+            break;
+        case 'q':
+            if (!K.E) K.Q = true;
+            break;
+        case 'e':
+            if (!K.Q) K.E = true;
+            break;
+    }
+});
+
+document.addEventListener('keyup', (e) => {
+    switch (e.key) {
+        case 'ArrowUp':
+            K.u = false;
+            break;
+        case 'ArrowLeft':
+            K.l = false;
+            break;
+        case 'ArrowRight':
+            K.r = false;
+            break;
+        case 'ArrowDown':
+            K.d = false;
+            break;
+
+        case 'w':
+            K.W = false;
+            break;
+        case 'a':
+            K.A = false;
+            break;
+        case 's':
+            K.S = false;
+            break;
+        case 'd':
+            K.D = false;
+            break;
+        case 'q':
+            K.Q = false;
+            break;
+        case 'e':
+            K.E = false;
+            break;
+    }
+});
+
+const moveCamera = () => {
+    camera.direction[0] = Math.cos(camera.pitch) * Math.cos(camera.yaw);
+    camera.direction[1] = Math.sin(camera.pitch);
+    camera.direction[2] = Math.cos(camera.pitch) * Math.sin(camera.yaw);
+
+    camera.noYDirection[0] = Math.cos(0) * Math.cos(camera.yaw);
+    camera.noYDirection[1] = Math.sin(0);
+    camera.noYDirection[2] = Math.cos(0) * Math.sin(camera.yaw);
+
+    camera.right = vec3.fromValues(-1 * Math.sin(camera.yaw), 0, Math.cos(camera.yaw));
+
+    let movementDirection = vec3.create();
+    if (K.u) {
+        vec3.scale(movementDirection, camera.noYDirection, movVel);
+        vec3.add(camera.position, camera.position, movementDirection);
+    }
+    if (K.d) {
+        vec3.scale(movementDirection, camera.noYDirection, -movVel);
+        vec3.add(camera.position, camera.position, movementDirection);
+    }
+    if (K.l) {
+        camera.yaw -= rotVel;
+    }
+    if (K.r) {
+        camera.yaw += rotVel;
+    }
+    if (K.W) {
+        camera.pitch += rotVel;
+    }
+    if (K.S) {
+        camera.pitch -= rotVel;
+    }
+}

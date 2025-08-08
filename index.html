@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web GL</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #3c3c3c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+    </style>
+    <script src="./libs/gl-matrix.min.js"></script>
+</head>
+<body>
+
+    <canvas id="c" width="1200" height="700"></canvas>
+
+    <script id="vertexShader" type="x-shader/x-vertex">
+        #version 300 es 
+        in vec3 position;
+        in vec2 textureCoordinate;
+
+        out vec2 ftextureCoordinate;
+
+        uniform vec3 offsets;
+
+        uniform mat4 modelMatrix;
+        uniform mat4 viewMatrix;
+        uniform mat4 projectionMatrix;
+
+        void main() {
+            gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position.x + offsets[gl_InstanceID],position.yz, 1);
+            ftextureCoordinate = textureCoordinate;
+        }
+    </script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+        #version 300 es
+        precision mediump float;
+
+        in vec2 ftextureCoordinate; // we can use same texture coordinates for 2 textures
+        uniform sampler2D sampler0;
+        out vec4 finalColor;
+
+        void main() {
+            finalColor = texture(sampler0, ftextureCoordinate);
+        }
+    </script>
+
+    <script src="global.js"></script>
+    <script src="controls.js"></script>
+    <script src="utils.js"></script>
+    <script src="model.js"></script>
+    <script src="cube.js"></script>
+    <script src="plain.js"></script>
+    <script src="scene.js"></script>
+    <script src="obj.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

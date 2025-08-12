@@ -1,11 +1,13 @@
 class Cube {
-    constructor(x, y, z, w, h, d, texture1) {
+    constructor(x, y, z, w, h, d, texture1, rpu = 1) {
         this.position = vec3.fromValues(x, y, z);
         this.size = vec3.fromValues(w, h, d);
         this.rotation = vec3.fromValues(0, 0, 0);
         this.modelMatrix = mat4.create();
 
         this.texture1 = texture1;
+
+        this.rpu = rpu;
 
         this.initShaders();
         this.initBuffers();
@@ -29,7 +31,7 @@ class Cube {
 
     initBuffers() {
         this.vertices = [...cubeVertices];
-        this.textureCoordinates = [...textureCoordinates];
+        this.textureCoordinates = cubeTextureCoordinates(this.rpu, this.size);
 
         this.vao = gl.createVertexArray();
         gl.bindVertexArray(this.vao);

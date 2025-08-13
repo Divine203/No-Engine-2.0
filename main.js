@@ -16,7 +16,7 @@ let pillar1Connect = new Cube(-.7, 1.3, -9, .5, .5, .25, texture4, 0, 0, .8);
 let pillar2Connect = new Cube(1.3, 1.3, -9, .5, .5, .25, texture4, 0, 0, .8);
 
 let wallPillar = new Cube(-2.9, 0, -9, .2, 1.6, .6, texture4);
-let wallPillarRight = new Cube(3.35, 0, -9, .2, 1.6, .6, texture4);
+let wallPillarRight = new Cube(3.75, 0, -9, .2, 1.6, .6, texture4);
 
 let roofPillarSlant = new Cube(-2.2, 1.1, -9, .3, 1.9, .6,texture4, 0, 0, -1.1);
 let roofPillarSlantRight = new Cube(2.8, 1.13, -9, .3, 1.9, .6,texture4, 0, 0, 1.1);
@@ -34,12 +34,12 @@ let leftRoof1 = new Plain(-2.6, 2, -9, 30, 2, texture3, .9, 1.55, 0, .7);
 let upRoof1 = new Plain(.5, 2.3, -9, 5, 30, texture3B, 1.55, 0, 0, .7);
 let rightRoof1 = new Plain(2.4, 1.1, -9, 30, 3, texture3B, -1, 1.6, 0, .7);
 
-let rightWall1 = new Plain(3, 0, -9, 30, 2, texture2, 0, 1.55, 0, .7);
+let rightWall1 = new Plain(3.4, 0, -9, 30, 3, texture2, 0, 1.55, 0, .7);
 
 let centerLeftRoof = new Plain(-.4, 1.9, -11.6, 4.6, 1.1, texture3B, 1.1, 1.55, 0, .7);
 let centerRightRoof = new Plain(1, 1.9, -11.6, 4.6, 1.5, texture3B, 1.1, -1.55, 0, .7);
 
-let backWall = new Plain(-.4, .8, -14, 8, 3, texture2, 0, 0, 0, .7);
+let backWall = new Plain(0, .8, -14, 8, 3, texture2, 0, 0, 0, .7);
 let frontWall = new Plain(-.4, .8, 5.2, 8, 3, texture2, 0, 0, 0, .7);
 //  
 

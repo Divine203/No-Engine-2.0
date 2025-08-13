@@ -9,5 +9,5 @@ const camera = {
     direction: vec3.fromValues(0, 0, -1),
     noYDirection: vec3.fromValues(0, 0, -1), // no pitch
     pitch: 0,
-    yaw: -1 * Math.PI / 2.0
+    yaw: 1 * Math.PI / 2.0
 };

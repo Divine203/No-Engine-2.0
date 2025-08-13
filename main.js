@@ -24,16 +24,23 @@ let roofPillarSlantRight = new Cube(2.8, 1.13, -9, .3, 1.9, .6,texture4, 0, 0, 1
 let mainRoofBind = new Cube(.3, 1.5, -9, 3.5, .45, .25, texture4);
 
 let centerLeftWall = new Plain(-1.15, .35, -11.6, 5, 2, texture2, 0, 1.55, 0, .7);
+let centerRightWall = new Plain(.8, .35, -11.6, 5, 2, texture2, 0, 1.55, 0, .7);
 
 // first room
 
-let floor1 = new Plain(0, 0, -9, 8, 10, texture1, 1.55, 0, 0, .7);
-let leftWall1 = new Plain(-3.5, 0, -9, 10, 2, texture2, 0, 1.55, 0, .7);
-let leftRoof1 = new Plain(-2.3, 1.85, -9, 10, 2, texture3, 1.1, 1.55, 0, .7);
-let upRoof1 = new Plain(.5, 2.3, -9, 4, 10, texture3B, 1.55, 0, 0, .7);
-let rightRoof1 = new Plain(2.4, 1.1, -9, 10, 3, texture3B, -1, 1.6, 0, .7);
+let floor1 = new Plain(0, 0, -9, 8, 30, texture1, 1.55, 0, 0, .7);
+let leftWall1 = new Plain(-3.5, 0, -9, 30, 2, texture2, 0, 1.55, 0, .7);
+let leftRoof1 = new Plain(-2.6, 2, -9, 30, 2, texture3, .9, 1.55, 0, .7);
+let upRoof1 = new Plain(.5, 2.3, -9, 5, 30, texture3B, 1.55, 0, 0, .7);
+let rightRoof1 = new Plain(2.4, 1.1, -9, 30, 3, texture3B, -1, 1.6, 0, .7);
 
-let rightWall1 = new Plain(3, 0, -9, 10, 2, texture2, 0, 1.55, 0, .7);
+let rightWall1 = new Plain(3, 0, -9, 30, 2, texture2, 0, 1.55, 0, .7);
+
+let centerLeftRoof = new Plain(-.4, 1.9, -11.6, 4.6, 1.1, texture3B, 1.1, 1.55, 0, .7);
+let centerRightRoof = new Plain(1, 1.9, -11.6, 4.6, 1.5, texture3B, 1.1, -1.55, 0, .7);
+
+let backWall = new Plain(-.4, .8, -14, 8, 3, texture2, 0, 0, 0, .7);
+let frontWall = new Plain(-.4, .8, 5.2, 8, 3, texture2, 0, 0, 0, .7);
 //  
 
 scene.objects = [
@@ -59,7 +66,14 @@ scene.objects = [
     roofPillarSlant,
     roofPillarSlantRight,
 
-    centerLeftWall
+    centerLeftWall,
+    centerRightWall,
+
+    centerLeftRoof,
+    centerRightRoof,
+
+    backWall,
+    frontWall
 ];
 
 // Set up camera

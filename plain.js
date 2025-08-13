@@ -72,9 +72,10 @@ class Plain {
         mat4.translate(this.modelMatrix, this.modelMatrix, this.position);
 
         // the order matters
+        mat4.rotateZ(this.modelMatrix, this.modelMatrix, this.rotation[2]);
         mat4.rotateY(this.modelMatrix, this.modelMatrix, this.rotation[1]);
         mat4.rotateX(this.modelMatrix, this.modelMatrix, this.rotation[0]);
-        mat4.rotateZ(this.modelMatrix, this.modelMatrix, this.rotation[2]);
+
 
         mat4.scale(this.modelMatrix, this.modelMatrix, this.size);
 

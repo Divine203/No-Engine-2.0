@@ -26,9 +26,9 @@ let mainRoofBind = new Cube(.3, 1.5, -9, 3.5, .45, .25, texture4);
 let centerLeftWall = new Plain(-1.15, .35, -11.6, 5, 2, texture2, 0, 1.55, 0, .7);
 let centerRightWall = new Plain(.8, .35, -11.6, 5, 2, texture2, 0, 1.55, 0, .7);
 
-let doorEdgeTop = new Cube(1, 1.3, 5.5, 2, .2, .2, texture4);
-let doorEdgeLeft = new Cube(1, .36, 5.5, .2, 2, .2, texture4);
-let doorEdgeRight = new Cube(-.7, .36, 5.5, .2, 2, .2, texture4);
+let doorEdgeTop = new Cube(.15, 1.5, 5.5, 2, .2, .2, texture4);
+let doorEdgeLeft = new Cube(1, .37, 5.5, .2, 2, .2, texture4);
+let doorEdgeRight = new Cube(-.7, .37, 5.5, .2, 2, .2, texture4);
 // first room
 
 let floor1 = new Plain(0, 0, -9, 8, 40, texture1, 1.58  , 0, 0, .7);

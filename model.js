@@ -1,8 +1,7 @@
 class Model {
-    constructor(url, x, y, z, scale = 1, texture1, texture2) {
+    constructor(url, x, y, z, scale = 1, texture1) {
         this.position = vec3.fromValues(x, y, z);
         this.texture1 = texture1;
-        this.texture2 = texture2;
         this.scale = scale;
         this.vertices = [];
         this.uvs = [];
@@ -98,10 +97,6 @@ class Model {
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, this.texture1);
         gl.uniform1i(this.sampler0Location, 0);
-
-        gl.activeTexture(gl.TEXTURE1);
-        gl.bindTexture(gl.TEXTURE_2D, this.texture2);
-        gl.uniform1i(this.sampler1Location, 1);
 
         gl.drawArrays(gl.TRIANGLES, 0, this.vertices.length / 3);
     }

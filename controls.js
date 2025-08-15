@@ -12,8 +12,8 @@ const K = {
     E: false,
 };
 
-let movVel = 0.06;
-let rotVel = 0.025;
+let movVel = 0.075;
+let rotVel = 0.031;
 
 document.addEventListener('keydown', (e) => {
     switch (e.key) {
@@ -87,6 +87,29 @@ document.addEventListener('keyup', (e) => {
     }
 });
 
+
+function applyViewBob(deltaTime) {
+    const bobAmount = 0.05;
+    const swayAmount = 0.03;
+    
+    if (isMoving) {
+        camera.viewBobTime += deltaTime * 8; // bob speed
+    } else {
+        camera.viewBobTime = 0; // reset if standing still
+    }
+
+    const verticalBob = Math.sin(camera.viewBobTime) * bobAmount;
+    const sidewaysSway = Math.cos(camera.viewBobTime * 0.5) * swayAmount;
+
+    // clone the real position, add bob offsets
+    const renderPos = vec3.clone(camera.position);
+    renderPos[1] += verticalBob;  // up/down
+    renderPos[0] += sidewaysSway; // left/right
+
+    return renderPos;
+}
+
+
 const moveCamera = () => {
     camera.direction[0] = Math.cos(camera.pitch) * Math.cos(camera.yaw);
     camera.direction[1] = Math.sin(camera.pitch);
@@ -119,4 +142,6 @@ const moveCamera = () => {
     if (K.S) {
         camera.pitch -= rotVel;
     }
+
+    isMoving = (K.u || K.d);
 }

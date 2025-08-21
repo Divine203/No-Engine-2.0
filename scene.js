@@ -1,6 +1,9 @@
 class Scene {
     constructor() {
         this.objects = [];
+
+        gl.enable(gl.BLEND); // transparency blending...
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     }
 
     render(viewMatrix, projectionMatrix) {

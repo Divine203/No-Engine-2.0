@@ -14,8 +14,8 @@ class Cube {
     }
 
     initShaders() {
-        this.vertexShader = getAndCompileShader("vertexShader");
-        this.fragmentShader = getAndCompileShader("fragmentShader");
+        this.vertexShader = getAndCompileShader("objVertexShader");
+        this.fragmentShader = getAndCompileShader("objFragmentShader");
 
         this.shaderProgram = gl.createProgram();
         gl.attachShader(this.shaderProgram, this.vertexShader);
@@ -25,12 +25,15 @@ class Cube {
         this.modelMatrixLocation = gl.getUniformLocation(this.shaderProgram, "modelMatrix");
         this.viewMatrixLocation = gl.getUniformLocation(this.shaderProgram, "viewMatrix");
         this.projectionMatrixLocation = gl.getUniformLocation(this.shaderProgram, "projectionMatrix");
+        this.lightColorLocation = gl.getUniformLocation(this.shaderProgram, "lightColor");
+        this.lightPositionLocation = gl.getUniformLocation(this.shaderProgram, "lightPosition");
 
         this.sampler0Location = gl.getUniformLocation(this.shaderProgram, "sampler0");
     }
 
     initBuffers() {
         this.vertices = [...cubeVertices];
+        this.normals = [...cubeNormals];
         this.textureCoordinates = cubeTextureCoordinates(this.rpu, this.size);
 
         this.vao = gl.createVertexArray();
@@ -42,7 +45,17 @@ class Cube {
 
         this.positionAttributeLocation = gl.getAttribLocation(this.shaderProgram, "position");
         gl.enableVertexAttribArray(this.positionAttributeLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
         gl.vertexAttribPointer(this.positionAttributeLocation, 3, gl.FLOAT, false, 0, 0);
+
+        this.normalsBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalsBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normals), gl.STATIC_DRAW);
+
+        this.vertexNormalAttributeLocation = gl.getAttribLocation(this.shaderProgram, "normal");
+        gl.enableVertexAttribArray(this.vertexNormalAttributeLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalsBuffer);
+        gl.vertexAttribPointer(this.vertexNormalAttributeLocation, 3, gl.FLOAT, false, 0, 0);
 
         this.textureCoordinatesBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoordinatesBuffer);
@@ -50,6 +63,7 @@ class Cube {
 
         this.textureCoordinateAttributeLocation = gl.getAttribLocation(this.shaderProgram, "textureCoordinate");
         gl.enableVertexAttribArray(this.textureCoordinateAttributeLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoordinatesBuffer);
         gl.vertexAttribPointer(this.textureCoordinateAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
         gl.bindVertexArray(null);
@@ -69,6 +83,9 @@ class Cube {
         gl.useProgram(this.shaderProgram);
         gl.bindVertexArray(this.vao);
 
+        gl.uniform3fv(this.lightColorLocation, light.ambient);
+        gl.uniform3fv(this.lightPositionLocation, light.position);
+
         gl.uniformMatrix4fv(this.modelMatrixLocation, false, this.modelMatrix);
         gl.uniformMatrix4fv(this.viewMatrixLocation, false, viewMatrix);
         gl.uniformMatrix4fv(this.projectionMatrixLocation, false, projectionMatrix);
@@ -77,6 +94,6 @@ class Cube {
         gl.bindTexture(gl.TEXTURE_2D, this.texture1);
         gl.uniform1i(this.sampler0Location, 0);
 
-        gl.drawArrays(gl.TRIANGLES, 0, this.vertices.length/3);
+        gl.drawArrays(gl.TRIANGLES, 0, this.vertices.length / 3);
     }
 }

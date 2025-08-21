@@ -1,9 +1,10 @@
 class Model {
-    constructor(url, x, y, z, scale = 1, texture1) {
+    constructor(url, x, y, z, texture1, scale = 1) {
         this.position = vec3.fromValues(x, y, z);
         this.texture1 = texture1;
         this.scale = scale;
         this.vertices = [];
+        this.normals = [];
         this.uvs = [];
         this.modelMatrix = mat4.create();
 
@@ -17,27 +18,48 @@ class Model {
         const text = await fetch(url).then(res => res.text());
         const lines = text.split('\n');
 
-        let tempVertices = [], tempUVs = [], indices = [];
+        let tempVertices = [], tempUVs = [], tempNormals = [];
 
         for (let line of lines) {
-            const parts = line.trim().split(' ');
+            const parts = line.trim().split(/\s+/);
             if (parts[0] === 'v') {
                 tempVertices.push(parts.slice(1).map(Number));
             } else if (parts[0] === 'vt') {
                 tempUVs.push(parts.slice(1).map(Number));
+            } else if (parts[0] === 'vn') {
+                tempNormals.push(parts.slice(1).map(Number));
             } else if (parts[0] === 'f') {
                 for (let i = 1; i <= 3; i++) {
-                    const [vIdx, vtIdx] = parts[i].split('/').map(n => parseInt(n) - 1);
+                    const indices = parts[i].split('/');
+                    const vIdx = parseInt(indices[0]) - 1;
+                    const vtIdx = indices[1] ? parseInt(indices[1]) - 1 : null;
+                    const vnIdx = indices[2] ? parseInt(indices[2]) - 1 : null;
+
+                    // push vertex position
                     this.vertices.push(...tempVertices[vIdx]);
-                    this.uvs.push(...tempUVs[vtIdx]);
+
+                    // push uv
+                    if (vtIdx !== null && tempUVs[vtIdx]) {
+                        this.uvs.push(...tempUVs[vtIdx]);
+                    } else {
+                        this.uvs.push(0, 0);
+                    }
+
+                    // push normal
+                    if (vnIdx !== null && tempNormals[vnIdx]) {
+                        this.normals.push(...tempNormals[vnIdx]);
+                    } else {
+                        // fallback (we'll compute later if missing)
+                        this.normals.push(0, 0, 0);
+                    }
                 }
             }
         }
     }
 
     initShaders() {
-        this.vertexShader = getAndCompileShader("vertexShader");
-        this.fragmentShader = getAndCompileShader("fragmentShader");
+        this.vertexShader = getAndCompileShader("objVertexShader");
+        this.fragmentShader = getAndCompileShader("objFragmentShader");
 
         this.shaderProgram = gl.createProgram();
         gl.attachShader(this.shaderProgram, this.vertexShader);
@@ -47,6 +69,9 @@ class Model {
         this.modelMatrixLocation = gl.getUniformLocation(this.shaderProgram, "modelMatrix");
         this.viewMatrixLocation = gl.getUniformLocation(this.shaderProgram, "viewMatrix");
         this.projectionMatrixLocation = gl.getUniformLocation(this.shaderProgram, "projectionMatrix");
+
+        this.lightColorLocation = gl.getUniformLocation(this.shaderProgram, "lightColor");
+        this.lightPositionLocation = gl.getUniformLocation(this.shaderProgram, "lightPosition");
 
         this.sampler0Location = gl.getUniformLocation(this.shaderProgram, "sampler0");
         this.sampler1Location = gl.getUniformLocation(this.shaderProgram, "sampler1");
@@ -75,6 +100,15 @@ class Model {
         gl.enableVertexAttribArray(this.textureCoordinateAttributeLocation);
         gl.vertexAttribPointer(this.textureCoordinateAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
+        this.normalsBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalsBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normals), gl.STATIC_DRAW);
+
+        this.vertexNormalAttributeLocation = gl.getAttribLocation(this.shaderProgram, "normal");
+        gl.enableVertexAttribArray(this.vertexNormalAttributeLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalsBuffer);
+        gl.vertexAttribPointer(this.vertexNormalAttributeLocation, 3, gl.FLOAT, false, 0, 0);
+
         gl.bindVertexArray(null);
     }
 
@@ -83,12 +117,15 @@ class Model {
 
         mat4.identity(this.modelMatrix); // line: 82
 
-        mat4.scale(this.modelMatrix, this.modelMatrix, [this.scale, this.scale, this.scale]);
-
         mat4.translate(this.modelMatrix, this.modelMatrix, this.position);
+
+        mat4.scale(this.modelMatrix, this.modelMatrix, [this.scale, this.scale, this.scale]);
 
         gl.useProgram(this.shaderProgram);
         gl.bindVertexArray(this.vao);
+
+        gl.uniform3fv(this.lightColorLocation, light.ambient);
+        gl.uniform3fv(this.lightPositionLocation, light.position);
 
         gl.uniformMatrix4fv(this.modelMatrixLocation, false, this.modelMatrix);
         gl.uniformMatrix4fv(this.viewMatrixLocation, false, viewMatrix);

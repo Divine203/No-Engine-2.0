@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,16 +18,20 @@
     </style>
     <script src="./libs/gl-matrix.min.js"></script>
 </head>
+
 <body>
 
     <canvas id="c" width="1200" height="700"></canvas>
 
-    <script id="vertexShader" type="x-shader/x-vertex">
+    <script id="objVertexShader" type="x-shader/x-vertex">
         #version 300 es 
         in vec3 position;
         in vec2 textureCoordinate;
+        in vec3 normal;
 
         out vec2 ftextureCoordinate;
+        out vec4 vertexWorldPosition;
+        out vec3 vertexNormal;
 
         uniform vec3 offsets;
 
@@ -36,25 +41,76 @@
 
         void main() {
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position.x + offsets[gl_InstanceID],position.yz, 1);
+            vertexWorldPosition = modelMatrix * vec4(position.x + offsets[gl_InstanceID],position.yz, 1);
             ftextureCoordinate = textureCoordinate;
+            vertexNormal = mat3(modelMatrix) * normal;
         }
     </script>
-    <script id="fragmentShader" type="x-shader/x-fragment">
+    <script id="objFragmentShader" type="x-shader/x-fragment">
         #version 300 es
         precision mediump float;
 
-        in vec2 ftextureCoordinate; // we can use same texture coordinates for 2 textures
+        in vec2 ftextureCoordinate;
         uniform sampler2D sampler0;
+
+        uniform vec3 lightColor;
+        uniform vec3 lightPosition;
+
+        out vec4 finalColor;
+
+        in vec4 vertexWorldPosition;
+        in vec3 vertexNormal;
+
+        void main() {
+            vec3 direction = normalize(lightPosition - vec3(vertexWorldPosition));
+            vec4 objectColor = vec4(1, 0, 1, 1);
+
+            float ambientIntensity = 0.9;
+
+            vec4 tex = texture(sampler0, ftextureCoordinate); // vec4
+            vec3 litRGB = ambientIntensity * lightColor * tex.rgb;
+
+            vec4 ambientComponent = vec4(litRGB, tex.a);
+
+            float diffuseIntensity = max(dot(normalize(vertexNormal), direction), 0.0);
+            vec4 diffuseComponent = vec4(diffuseIntensity * lightColor, 1.0);
+
+            finalColor = (ambientComponent + diffuseComponent) * objectColor;
+        }
+    </script>
+
+
+
+    <script id="lightVertexShader" type="x-shader/x-vertex">
+        #version 300 es 
+        in vec3 position;
+
+        uniform vec3 offsets;
+
+        uniform mat4 modelMatrix;
+        uniform mat4 viewMatrix;
+        uniform mat4 projectionMatrix;
+
+        void main() {
+            gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position.x + offsets[gl_InstanceID],position.yz, 1);
+        }
+    </script>
+    <script id="lightFragmentShader" type="x-shader/x-fragment">
+        #version 300 es
+        precision mediump float;
+
+        uniform vec4 color;
         out vec4 finalColor;
 
         void main() {
-            finalColor = texture(sampler0, ftextureCoordinate);
+            finalColor = 10.0 * color;
         }
     </script>
 
     <script src="global.js"></script>
     <script src="controls.js"></script>
     <script src="utils.js"></script>
+    <script src="light.js"></script>
     <script src="model.js"></script>
     <script src="cube.js"></script>
     <script src="plain.js"></script>
@@ -62,4 +118,5 @@
     <script src="obj.js"></script>
     <script src="main.js"></script>
 </body>
+
 </html>

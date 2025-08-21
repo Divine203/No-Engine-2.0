@@ -13,8 +13,8 @@ class Plain {
     }
 
     initShaders() {
-        this.vertexShader = getAndCompileShader("vertexShader");
-        this.fragmentShader = getAndCompileShader("fragmentShader");
+        this.vertexShader = getAndCompileShader("objVertexShader");
+        this.fragmentShader = getAndCompileShader("objFragmentShader");
 
         this.shaderProgram = gl.createProgram();
         gl.attachShader(this.shaderProgram, this.vertexShader);
@@ -24,12 +24,15 @@ class Plain {
         this.modelMatrixLocation = gl.getUniformLocation(this.shaderProgram, "modelMatrix");
         this.viewMatrixLocation = gl.getUniformLocation(this.shaderProgram, "viewMatrix");
         this.projectionMatrixLocation = gl.getUniformLocation(this.shaderProgram, "projectionMatrix");
+        this.lightColorLocation = gl.getUniformLocation(this.shaderProgram, "lightColor");
+        this.lightPositionLocation = gl.getUniformLocation(this.shaderProgram, "lightPosition");
 
         this.sampler0Location = gl.getUniformLocation(this.shaderProgram, "sampler0");
     }
 
     initBuffers() {
         this.vertices = [...plainVertices];
+        this.normals = [...plainNormals];
 
         // How many times to repeat per unit
         let repeatPerUnit = this.rpu; // tile per 1 unit length
@@ -63,6 +66,15 @@ class Plain {
         gl.enableVertexAttribArray(this.textureCoordinateAttributeLocation);
         gl.vertexAttribPointer(this.textureCoordinateAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
+        this.normalsBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalsBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normals), gl.STATIC_DRAW);
+
+        this.vertexNormalAttributeLocation = gl.getAttribLocation(this.shaderProgram, "normal");
+        gl.enableVertexAttribArray(this.vertexNormalAttributeLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalsBuffer);
+        gl.vertexAttribPointer(this.vertexNormalAttributeLocation, 3, gl.FLOAT, false, 0, 0);
+
         gl.bindVertexArray(null);
     }
 
@@ -81,6 +93,9 @@ class Plain {
 
         gl.useProgram(this.shaderProgram);
         gl.bindVertexArray(this.vao);
+
+        gl.uniform3fv(this.lightColorLocation, light.ambient);
+        gl.uniform3fv(this.lightPositionLocation, light.position);
 
         gl.uniformMatrix4fv(this.modelMatrixLocation, false, this.modelMatrix);
         gl.uniformMatrix4fv(this.viewMatrixLocation, false, viewMatrix);

@@ -68,11 +68,11 @@
             vec3 lightDirection = normalize(lightPosition - vec3(vertexWorldPosition));
             vec3 viewDirection = normalize(cameraPosition - vec3(vertexWorldPosition));
 
-            vec4 objectColor = vec4(.4, .4, .4, 1);
+            vec4 objectColor = vec4(.2, .2, .2, 1);
 
             vec3 normalizedNormal = normalize(vertexNormal);
 
-            float ambientIntensity = 0.7;
+            float ambientIntensity = 0.9;
 
             vec4 tex = texture(sampler0, ftextureCoordinate); // vec4
             vec3 litRGB = ambientIntensity * lightColor * tex.rgb;
@@ -84,10 +84,10 @@
 
             vec3 reflectedLightDirection = reflect(-lightDirection, normalizedNormal);
 
-            float specularIntensity = pow(max(dot(reflectedLightDirection, viewDirection),0.0),32.0);
+            float specularIntensity = pow(max(dot(reflectedLightDirection, viewDirection),0.0),78.0);
             vec4 specularComponent = vec4(specularIntensity * lightColor, 1.0);
 
-            finalColor = (ambientComponent + diffuseComponent + specularComponent) * objectColor;
+            finalColor = (ambientComponent + diffuseComponent + specularComponent);
         }
     </script>
 

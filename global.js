@@ -5,8 +5,8 @@ let texture0Ready = false;
 let texture1Ready = false;
 
 let light = { 
-    // ambient: vec3.fromValues(0.2, 0.2, 0.2),
-    ambient: vec3.fromValues(1, 0, 0),
+    ambient: vec3.fromValues(0.3, 0, 0),
+    // ambient: vec3.fromValues(1, 0, 0),
     position: vec3.fromValues(0, 1, 6)
 }
 

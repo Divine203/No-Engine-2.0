@@ -8,6 +8,8 @@ class Plain {
         this.rpu = rpu;
         this.texture1 = texture1;
 
+        this.material = plastic;
+
         this.initShaders();
         this.initBuffers();
     }
@@ -27,6 +29,11 @@ class Plain {
         this.lightColorLocation = gl.getUniformLocation(this.shaderProgram, "lightColor");
         this.lightPositionLocation = gl.getUniformLocation(this.shaderProgram, "lightPosition");
         this.cameraPositionLocation = gl.getUniformLocation(this.shaderProgram, "cameraPosition");
+
+        this.materialAmbientLocation = gl.getUniformLocation(this.shaderProgram, "materialAmbient");
+        this.materialDiffuseLocation = gl.getUniformLocation(this.shaderProgram, "materialDiffuse");
+        this.materialSpecularLocation = gl.getUniformLocation(this.shaderProgram, "materialSpecular");
+        this.materialShininessLocation = gl.getUniformLocation(this.shaderProgram, "materialShininess");
 
         this.sampler0Location = gl.getUniformLocation(this.shaderProgram, "sampler0");
     }
@@ -95,9 +102,15 @@ class Plain {
         gl.useProgram(this.shaderProgram);
         gl.bindVertexArray(this.vao);
 
-        gl.uniform3fv(this.lightColorLocation, light.ambient);
+        gl.uniform3fv(this.lightColorLocation, light.color);
         gl.uniform3fv(this.lightPositionLocation, lightCube.position);
         gl.uniform3fv(this.cameraPositionLocation, camera.position);
+
+        gl.uniform3fv(this.materialAmbientLocation, this.material.ambient);
+        gl.uniform3fv(this.materialDiffuseLocation, this.material.diffuse);
+        gl.uniform3fv(this.materialSpecularLocation, this.material.specular);
+        gl.uniform1f(this.materialShininessLocation, this.material.shininess);
+
 
         gl.uniformMatrix4fv(this.modelMatrixLocation, false, this.modelMatrix);
         gl.uniformMatrix4fv(this.viewMatrixLocation, false, viewMatrix);

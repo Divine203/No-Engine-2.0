@@ -5,7 +5,7 @@ let wall3 = loadTexture("assets/wall3.png");
 let texture3 = loadTexture("assets/wood.jpg");
 let texture3B = loadTexture("assets/wood_2.jpg");
 
-let gold = loadTexture("assets/gold.png");
+let goldTexture = loadTexture("assets/gold.png");
 
 let metal1 = loadTexture("assets/metal2.png");
 
@@ -42,7 +42,7 @@ let doorEdgeRight = new Cube(-.7, .37, 5.5, .2, 2, .2, texture4);
 let box1 = new Cube(1, -.34, -13, .3, .3, .3, boxTexture1, 0, 0, 0, 3.3);
 let box2 = new Cube(3, -.17, 4.8, .3, .3, .3, boxTexture1, 0, 0, 0, 3.3);
 let box3 = new Cube(3, -.17, 5.8, .3, .3, .3, boxTexture1, 0, 0, 0, 3.3);
-let box4 = new Cube(-2, 0, 1.8, 1.3, 1.3, 1.3, metal1, 0, 0, 0, 1.3);
+let box4 = new Cube(-2, 0, -7, 1.3, 1.3, 1.3, metal1, 0, 0, 0, 1.3);
 // first room
 
 let floor1 = new Plain(0, -1, -9, 8, 40, texture1, -1.58, 0, 0, .7);
@@ -64,7 +64,7 @@ let roomWall3Top = new Plain(.3, 1.94, 5, 2, 1, texture2, 0, 0, 0, .7);
 
 lightCube = new Light(light.position[0], light.position[1], light.position[2], .2, .2, .2);
 
-let Jesus = new Model("assets/models/jesus.obj", 0, -.1, -5, gold, .08);
+let Jesus = new Model("assets/models/jesus.obj", 0, -.1, -5, goldTexture, .08);
 
 //
 

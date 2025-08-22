@@ -1,10 +1,10 @@
 class Light {
-    constructor(x, y, z, w, h, d, color = [1, 1, 1]) {
+    constructor(x, y, z, w, h, d, color = light.color) {
         this.position = vec3.fromValues(x, y, z);
         this.size = vec3.fromValues(w, h, d);
         this.modelMatrix = mat4.create();
 
-        this.color = color;
+        this.color = [light.color[0], light.color[1], light.color[2]];
 
         this.initShaders();
         this.initBuffers();
@@ -57,12 +57,12 @@ class Light {
         gl.uniform4fv(this.colorLocation, [...this.color, 1.0]);
 
         // circular light motion
-        const radius = 3;
+        const radius = 2.4;
         const speed = 0.001; // radians per frame
         const angle = performance.now() * speed;
 
-        this.position[0] = Math.cos(angle) * radius;
-        this.position[2] = Math.sin(angle) * radius;
+        this.position[0] = (Math.cos(angle) * radius) + light.position[0];
+        this.position[2] = (Math.sin(angle) * radius) + light.position[2];
 
 
         gl.drawArrays(gl.TRIANGLES, 0, this.vertices.length / 3);

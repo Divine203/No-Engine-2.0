@@ -5,9 +5,8 @@ let texture0Ready = false;
 let texture1Ready = false;
 
 let light = { 
-    ambient: vec3.fromValues(0.3, 0, 0),
-    // ambient: vec3.fromValues(1, 0, 0),
-    position: vec3.fromValues(0, 1, 6)
+    color: vec3.fromValues(0.9, 0.3, 0.2),
+    position: vec3.fromValues(0, 1, 0)
 }
 
 let isMoving = false;
@@ -20,4 +19,19 @@ const camera = {
     noYDirection: vec3.fromValues(0, 0, -1), // no pitch
     pitch: 0,
     yaw: -1 * Math.PI / 2.0
+};
+
+
+let gold = {
+  ambient: [0.347, 0.299, 0.174],
+  diffuse: [0.751, 0.606, 0.226],
+  specular: [0.328, 0.328, 0.328],
+  shininess: 22.0
+};
+
+let plastic = {
+  ambient: [0.1, 0.1, 0.1],
+  diffuse: [0.75, 0.75, 0.75],
+  specular: [0.3, 0.3, 0.3],
+  shininess: 10.0
 };

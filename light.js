@@ -56,6 +56,15 @@ class Light {
 
         gl.uniform4fv(this.colorLocation, [...this.color, 1.0]);
 
+        // circular light motion
+        const radius = 3;
+        const speed = 0.001; // radians per frame
+        const angle = performance.now() * speed;
+
+        this.position[0] = Math.cos(angle) * radius;
+        this.position[2] = Math.sin(angle) * radius;
+
+
         gl.drawArrays(gl.TRIANGLES, 0, this.vertices.length / 3);
     }
 }

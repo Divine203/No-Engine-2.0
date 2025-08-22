@@ -26,6 +26,7 @@ class Plain {
         this.projectionMatrixLocation = gl.getUniformLocation(this.shaderProgram, "projectionMatrix");
         this.lightColorLocation = gl.getUniformLocation(this.shaderProgram, "lightColor");
         this.lightPositionLocation = gl.getUniformLocation(this.shaderProgram, "lightPosition");
+        this.cameraPositionLocation = gl.getUniformLocation(this.shaderProgram, "cameraPosition");
 
         this.sampler0Location = gl.getUniformLocation(this.shaderProgram, "sampler0");
     }
@@ -95,7 +96,8 @@ class Plain {
         gl.bindVertexArray(this.vao);
 
         gl.uniform3fv(this.lightColorLocation, light.ambient);
-        gl.uniform3fv(this.lightPositionLocation, light.position);
+        gl.uniform3fv(this.lightPositionLocation, lightCube.position);
+        gl.uniform3fv(this.cameraPositionLocation, camera.position);
 
         gl.uniformMatrix4fv(this.modelMatrixLocation, false, this.modelMatrix);
         gl.uniformMatrix4fv(this.viewMatrixLocation, false, viewMatrix);

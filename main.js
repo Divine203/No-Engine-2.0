@@ -62,7 +62,7 @@ let roomWall1 = new Plain(-2, .8, 5, 2.6, 3, texture2, 0, 0, 0, .7);
 let roomWall2 = new Plain(2.3, .8, 5, 2.6, 3, texture2, 0, 0, 0, .7);
 let roomWall3Top = new Plain(.3, 1.94, 5, 2, 1, texture2, 0, 0, 0, .7);
 
-let lightCube = new Light(light.position[0], light.position[1], light.position[2], .2, .2, .2);
+lightCube = new Light(light.position[0], light.position[1], light.position[2], .2, .2, .2);
 
 let Jesus = new Model("assets/models/jesus.obj", 0, -.1, -5, gold, .08);
 

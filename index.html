@@ -43,7 +43,8 @@
             gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position.x + offsets[gl_InstanceID],position.yz, 1);
             vertexWorldPosition = modelMatrix * vec4(position.x + offsets[gl_InstanceID],position.yz, 1);
             ftextureCoordinate = textureCoordinate;
-            vertexNormal = mat3(modelMatrix) * normal;
+            // vertexNormal = mat3(modelMatrix) * normal;
+            vertexNormal = mat3(transpose(inverse(modelMatrix))) * normal; // fix normal on scales
         }
     </script>
     <script id="objFragmentShader" type="x-shader/x-fragment">
@@ -56,26 +57,37 @@
         uniform vec3 lightColor;
         uniform vec3 lightPosition;
 
+        uniform vec3 cameraPosition;
+
         out vec4 finalColor;
 
         in vec4 vertexWorldPosition;
         in vec3 vertexNormal;
 
         void main() {
-            vec3 direction = normalize(lightPosition - vec3(vertexWorldPosition));
-            vec4 objectColor = vec4(1, 0, 1, 1);
+            vec3 lightDirection = normalize(lightPosition - vec3(vertexWorldPosition));
+            vec3 viewDirection = normalize(cameraPosition - vec3(vertexWorldPosition));
 
-            float ambientIntensity = 0.9;
+            vec4 objectColor = vec4(.4, .4, .4, 1);
+
+            vec3 normalizedNormal = normalize(vertexNormal);
+
+            float ambientIntensity = 0.7;
 
             vec4 tex = texture(sampler0, ftextureCoordinate); // vec4
             vec3 litRGB = ambientIntensity * lightColor * tex.rgb;
 
             vec4 ambientComponent = vec4(litRGB, tex.a);
 
-            float diffuseIntensity = max(dot(normalize(vertexNormal), direction), 0.0);
+            float diffuseIntensity = max(dot(normalize(vertexNormal), lightDirection), 0.0);
             vec4 diffuseComponent = vec4(diffuseIntensity * lightColor, 1.0);
 
-            finalColor = (ambientComponent + diffuseComponent) * objectColor;
+            vec3 reflectedLightDirection = reflect(-lightDirection, normalizedNormal);
+
+            float specularIntensity = pow(max(dot(reflectedLightDirection, viewDirection),0.0),32.0);
+            vec4 specularComponent = vec4(specularIntensity * lightColor, 1.0);
+
+            finalColor = (ambientComponent + diffuseComponent + specularComponent) * objectColor;
         }
     </script>
 

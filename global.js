@@ -12,6 +12,8 @@ let light = {
 
 let isMoving = false;
 
+let lightCube;
+
 const camera = {
     position: vec3.fromValues(0, .3, 7), // position: [x, y, z]
     direction: vec3.fromValues(0, 0, -1),

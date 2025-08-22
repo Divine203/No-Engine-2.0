@@ -5,7 +5,7 @@ let texture0Ready = false;
 let texture1Ready = false;
 
 let light = { 
-    color: vec3.fromValues(0.9, 0.3, 0.2),
+    color: vec3.fromValues(0.9, 0.8, 0.2),
     position: vec3.fromValues(0, 1, 0)
 }
 

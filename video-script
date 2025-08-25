@@ -1,10 +1,10 @@
 GRAPHICS ENGINE IN WEBGL and Javascript Youtube video
 
 ///// INTRO /////
-This is a Graphics Engine, made from scratch using vanilla Javascript and WebGL. 
+This is a Graphics Engine, made from scratch using Javascript and WebGL. 
 You're probably used to Graphics Engines being rendered primarily with low level languages. But in this video, we're going to try something different by using a not so commonly used language, along with a Graphics API to utilize the GPU. 
 We're going to start simple, from hello triangle with basic shader code and slowly building our way up to, 3D objects, textures, transformations, cameras, 3d models and lighting. 
-We're going to be using math equations and some GPU magic to simulate real 3D graphics.
+We're going to be using only math equations and some GPU magic to simulate real 3D graphics.
 
 //// BODY /////
 We'll start by setting up our canvas with the webgl context and displaying a blank space.
@@ -42,11 +42,15 @@ lastly we assign the given color to the final color.
 
 
 we make another script for our fragment shader.
+we need to declare a floating point precision otherwise we get an error, medium is usually the standard.
+we take in our final color from the vertex shader, declare our final color.
+And we just set our final color to the given color.
 
 
+In our javascript we create an array of vertices for our triangle, in clipspace coordinates.
 
+we write a function to compile our shaders.
 
-
-
+we create a buffer which is just a container we store our data for the GPU.
 
 

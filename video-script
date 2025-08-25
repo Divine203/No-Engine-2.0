@@ -1,0 +1,52 @@
+GRAPHICS ENGINE IN WEBGL and Javascript Youtube video
+
+///// INTRO /////
+This is a Graphics Engine, made from scratch using vanilla Javascript and WebGL. 
+You're probably used to Graphics Engines being rendered primarily with low level languages. But in this video, we're going to try something different by using a not so commonly used language, along with a Graphics API to utilize the GPU. 
+We're going to start simple, from hello triangle with basic shader code and slowly building our way up to, 3D objects, textures, transformations, cameras, 3d models and lighting. 
+We're going to be using math equations and some GPU magic to simulate real 3D graphics.
+
+//// BODY /////
+We'll start by setting up our canvas with the webgl context and displaying a blank space.
+
+To no surprise Graphics programming has many parts to it. But the foundation of it all is a little something called shaders. 
+Shaders in simple terms are just programs that run on the GPU. Theyre written in a language called GLSL and are split mainly into 2 parts. The vertex shader and the fragment shader.
+
+Think of it like a Brush and a Color pallet. The vertex shader tells the GPU where to draw something, the Fragment shader tells the GPU what color to draw. 
+A bit of an oversimplification but that's basically the gist.
+
+Together they make a Shader Program. The vertex shader runs once for every vertex in your world, while the fragment shader runs for every pixel inside the shapes those vertices form, like a triangle.
+
+We use them by passing data of our vertices from our javascript to the vertex shader, the vertex shader then shares the data to the fragment shader, which does the coloring calculations.
+
+At the start, you’ll probably only need one shader program to get things working. Later on, as you add more effects like lighting and textures, you can create additional shaders for different purposes. 
+
+For my engine we'll only write 2 shader programs, 1 for rendering objects in our world, and the other for light sources.
+
+Sounds confusing? Don't worry.
+
+
+Let's start with writing a simple shader code to draw a triangle.
+
+For syntax highlighting we'll write our shaders as inline scripts in the HTML.
+
+the vertex shader will take in a position vector and a color vector, position being xyz, color being rgba. 
+
+along with an out variable to pass the final color to the fragment shader.
+
+we set up our main function.
+
+we assign the final position of our vertex in clip space, using the built in variable gl_Position. 
+It takes only vec4 values, so we'll wrap our position in a vec4, and pass in 1 as the 4th value. This is used later by the GPU for perspective division, so it knows where on our canvas the vertex ends up.
+lastly we assign the given color to the final color.
+
+
+we make another script for our fragment shader.
+
+
+
+
+
+
+
+

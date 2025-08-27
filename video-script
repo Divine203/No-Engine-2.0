@@ -15,9 +15,9 @@ Shaders in simple terms are just programs that run on the GPU. Theyre written in
 Think of it like a Brush and a Color pallet. The vertex shader tells the GPU where to draw something, the Fragment shader tells the GPU what color to draw. 
 A bit of an oversimplification but that's basically the gist.
 
-Together they make a Shader Program. The vertex shader runs once for every vertex in your world, while the fragment shader runs for every pixel inside the shapes those vertices form, like a triangle.
+Together they make something called a Shader Program. The vertex shader runs once for every vertex in your world, while the fragment shader runs for every pixel inside the shapes those vertices form, like a triangle.
 
-We use them by passing data of our vertices from our javascript to the vertex shader, the vertex shader then shares the data to the fragment shader, which does the coloring calculations.
+We use them by passing data of our vertices and colors from our javascript to the vertex shader, the vertex shader then shares the data to the fragment shader, which does the coloring calculations.
 
 At the start, you’ll probably only need one shader program to get things working. Later on, as you add more effects like lighting and textures, you can create additional shaders for different purposes. 
 
@@ -37,7 +37,7 @@ along with an out variable to pass the final color to the fragment shader.
 we set up our main function.
 
 we assign the final position of our vertex in clip space, using the built in variable gl_Position. 
-It takes only vec4 values, so we'll wrap our position in a vec4, and pass in 1 as the 4th value. This is used later by the GPU for perspective division, so it knows where on our canvas the vertex ends up.
+It takes only vec4 values, so we'll wrap our vec3 position in a vec4, and pass in 1 as the 4th value. This is used later by the GPU for perspective division, so it knows where on our canvas the vertex ends up.
 lastly we assign the given color to the final color.
 
 
@@ -51,6 +51,130 @@ In our javascript we create an array of vertices for our triangle, in clipspace 
 
 we write a function to compile our shaders.
 
-we create a buffer which is just a container we store our data for the GPU.
+we create something called a buffer which is just a container to store our data for the GPU. Think of it like a lunch box of numbers, we pack the lunch, the GPU eats.
+
+we assign our vertices to the buffer.
+
+we create another array for each vertex color.
+
+create a buffer for it to store the data.
+
+
+we compile our shaders.
+
+create a shader program. 
+
+Link our shaders to the program.
+
+add a little check condition incase of errors 
+
+then we just use the program. 
+
+The variables we created in our shaders each have unique attributes called locations, think of them as gates or portals to the underworld (the GPU of course)
+
+so we need to get these locations based on the variable names we gave them and send our data.
+
+we bind our position location to the vertex buffer.
+
+we then tell the GPU how we want them to be read. index is the location itself with the data, size is how many in the array it should take per vertex, that's 3 (x, y, z). the type is float.
+
+it's already in float so we dont need to normalize it. Then the rest are just specifics on how it should be read, incase if we have some numbers we want the GPU to skip. We want everything to be read as it is. So we set them to 0.
+
+
+we do the exact same thing for colors. 
+
+and then finally we draw in render loop. 
+
+And look at that, our first triangle. Pretty sick. 
+
+
+I know, its a lot of work for one triangle. But once you get this down, everything else is just building untop of this.
+
+Now triangles are cool but i want to make something in 3D.
+
+Rendering 3D objects is pretty much the same, only difference is the change of vertices.
+
+
+a cube for instance, has 6 faces. For each face we have to create 6 vertices, each with their xyz coordinate.
+
+*sarcastic baby tone voice lol* => "But Divine, a square has 4 points not 6". 
+
+Well the GPU only understands triangles. A square can be divided into 2 triangles with 3 vertices each, making 6 for one face of the cube. 
+
+We unfortunately have to account for all 6 even if some of the values are repeated. You complete idio...
+
+
+For colors we want each face to have a distinct color. So we give all 6 vertices for each face, the same color. Thats way too long to write down. 
+
+So ill, just create a matrix of each face's color. 
+
+Then just repeat each one six times, and spread the values in an array.
+
+
+
+And we have a cube. 
+
+Well sort of its a bit distorted cause we don't have a projection matrix but we'll get to that in a bit, also we can't see the other sides yet, cause we need some sort of rotation happening. shit
+
+
+This is where matrix multiplication comes in. In computer graphics there are 3 major matrices you work with, the Model matrix, the view matrix and the projection matrix. 
+
+The model matrix is like a makeup artist, you just stand there and they apply all sorts of transformations to you. Things like rotation, scaling and positioning.
+
+The view matrix is like a cameraman. They don’t touch you at all, they just move around the stage, step closer, step back, or change their angle. This decides what part of the scene actually shows up in the shot.
+
+Finally, the projection matrix is like the lens you put on the camera — wide angle, zoomed in, or even fish-eye. It decides how the 3D world gets squashed onto the 2D screen.
+
+
+In our vertex shader we need to create variables for all 3 matrixes.
+
+Then in our final gl_Position we multiply all 3 of them with our vertex position. The order we multiply is also important.
+
+we first apply our lenses, then set the camera, apply the makeup and lastly set our position.    
+
+In concept its actually meant to be in reverse but because of how matrix math works, we have to write it this way instead.
+
+In our Javascript, i really don't want to go through the pain of doing matrix calculations by hand. So i'll be using a library, called gl-matrix, they have some built in matrix functions and vectors we can use. 
+
+Just to make our code alot more easy to manage.
+
+We can actually wrap our cube code into a function, and just store essential data in a cube object.
+
+This is also where we apply our model matrix. 
+
+Outside the function, we create the cube, 
+
+set up out view matrix and projection matrix
+
+then use this function to apply our perspective. 
+
+Our field of view will be 45 deg but in radians. ill ascpect ratio will be the canvas width/ canvas height and the rest are our near plane and far plane values respectively, meaning any thing closer than 0.1 or farther than 10 will be clipped.
+
+we link everything to our locations in the shaders.
+
+create an angle variable.
+
+in our render loop we increment our angle.
+
+initiate the cube.
+
+we apply our makeup, we apply the translations first before rotations. i'll set the cube z coordinate to -7 so its not too close to the camera.
+
+we apply some x and y rotations.
+
+we finally send all matrixes to their respective shader locations
+
+and finally we draw, 36 cause thats how many vertices our cube has. you can Do the math (meme sound effect.)
+
+
+
+And look at that a spinning cube.
+
+Now Lets add texture to it.
+
+Textures are mapped on 3d objects by passing their edges as UV coordinates for each vertex of that object.  
+
+0, 0 being bottom left, 1,1 beign bottom right and so on
+
 
 

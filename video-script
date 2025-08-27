@@ -175,3 +175,12 @@ Now Lets add texture to it.
 Textures are mapped on 3d objects by passing their edges as UV coordinates for each vertex of that object.  
 
 0, 0 being bottom left, 1,1 beign bottom right and so on
+
+We first need to create locations in our shaders for texture instead of a color.
+
+then all we have to do is create an array of this UV coordinate values in the order of their respective vertices. 
+
+initiate our textures, using GL functions, send the data to our texture location and voila.
+
+
+Now to make a proper scene with camera movements and more objects. We have to some code refactoring, cause having everything in just one file, is getting too chaotic

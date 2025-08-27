@@ -196,9 +196,33 @@ direction where they're facing.
 
 and finally their head rotations, we'll call this pitch and yaw. For vertical and horizontal rotations respectively.
 
-we actually don't give yaw 0 at first cause by default it looks towards the right of the x axis cause its horizontal, what we actually want it for it to look towards the Z coordinate, meaning rotating -90 degrees.
+we actually don't give yaw 0 at first cause by default it looks towards the right of the x axis cause its horizontal, what we actually want is for it to look towards the Z coordinate, meaning rotating it backwards -90 degrees.
 
-so we instead set its initial value to -pi divided by 2.
+so we instead set its initial value to -pi divided by 2, meaning -90 degrees.
+
+
+
+next we listen for some keyboard inputs
+
+we create a velocity variable for speed.
+
+we create a function that makes changes to the variables based on the key presses.
+
+our pitch yaw determines what direction the camera is facing. so we need to convert their values to direction vectors using simple triginometric formulas.
+
+we also need a strafe direction variable, for moving left and right. This is so we can keep track of where our left and right directions are regardless of where we're facing.
+
+Then the rest is straightforward, we just scale our directions add to our positions based on these variables, and our movement velocity.
+
+we add 4 more controls for adjusting our yaw and pitch.
+
+
+then in our loop we create a target we is just a point in front of the camera. 
+
+lastly we just build our view matrix around everything. the output, our eye position, where the eye is looking at. and what direction is up which is the y axis. 
+
+And we have a working camera. Pretty sick.
+
 
 
 

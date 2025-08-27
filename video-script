@@ -175,6 +175,3 @@ Now Lets add texture to it.
 Textures are mapped on 3d objects by passing their edges as UV coordinates for each vertex of that object.  
 
 0, 0 being bottom left, 1,1 beign bottom right and so on
-
-
-

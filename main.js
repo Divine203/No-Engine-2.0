@@ -138,7 +138,6 @@ function animate() {
     vec3.add(target, camera.position, camera.direction);
     const renderPos = applyViewBob(deltaTime);
     mat4.lookAt(viewMatrix, renderPos, vec3.add(vec3.create(), renderPos, camera.direction), up);
-    // mat4.lookAt(viewMatrix, camera.position, target, vec3.fromValues(0, 1, 0));
 
     scene.render(viewMatrix, projectionMatrix);
     requestAnimationFrame(animate);

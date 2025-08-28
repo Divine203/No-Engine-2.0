@@ -4,7 +4,7 @@ GRAPHICS ENGINE IN WEBGL and Javascript Youtube video
 This is a Graphics Engine, made from scratch using Javascript and WebGL. 
 You're probably used to Graphics Engines being rendered primarily with low level languages. But in this video, we're going to try something different by using a not so commonly used language, along with a Graphics API to utilize the GPU. 
 We're going to start simple, from hello triangle with basic shader code and slowly building our way up to, 3D objects, textures, transformations, cameras, 3d models and lighting. 
-We're going to be using only math equations and some GPU magic to simulate real 3D graphics.
+We're going to be using only math equations and some GPU coding magic to simulate real 3D graphics.
 
 //// BODY /////
 We'll start by setting up our canvas with the webgl context and displaying a blank space.
@@ -117,13 +117,13 @@ And we have a cube.
 Well sort of its a bit distorted cause we don't have a projection matrix but we'll get to that in a bit, also we can't see the other sides yet, cause we need some sort of rotation happening. shit
 
 
-This is where matrix multiplication comes in. In computer graphics there are 3 major matrices you work with, the Model matrix, the view matrix and the projection matrix. 
+This is where matrix multiplication comes in. In computer graphics there are 3 major matrices you work with
 
-The model matrix is like a makeup artist, you just stand there and they apply all sorts of transformations to you. Things like rotation, scaling and positioning.
+First is the model matrix, think of it like a makeup artist, you just stand there and they apply all sorts of transformations to you. Things like rotation, scaling and positioning.
 
-The view matrix is like a cameraman. They don’t touch you at all, they just move around the stage, step closer, step back, or change their angle. This decides what part of the scene actually shows up in the shot.
+Next is the view matrix, this is like a cameraman. They don’t touch you at all, they just move around the stage, step closer, step back, or change their angle. This decides what part of the scene actually shows up in the screen.
 
-Finally, the projection matrix is like the lens you put on the camera — wide angle, zoomed in, or even fish-eye. It decides how the 3D world gets squashed onto the 2D screen.
+Finally, the projection matrix, this is like the lens you put on the camera — wide angle, zoomed in, or even fish-eye. It decides how the 3D world gets squashed onto the 2D screen.
 
 
 In our vertex shader we need to create variables for all 3 matrixes.
@@ -194,7 +194,7 @@ position where the person is.
 
 direction where they're facing.
 
-and finally their head rotations, we'll call this pitch and yaw. For vertical and horizontal rotations respectively.
+and finally their head rotations, we'll call this pitch and yaw. Pitch for vertical, yaw for horizontal.
 
 we actually don't give yaw 0 at first cause by default it looks towards the right of the x axis cause its horizontal, what we actually want is for it to look towards the Z coordinate, meaning rotating it backwards -90 degrees.
 
@@ -206,28 +206,109 @@ next we listen for some keyboard inputs
 
 we create a velocity variable for speed.
 
-we create a function that makes changes to the variables based on the key presses.
+then we create a function that makes changes to the variables based on the key presses.
 
-our pitch yaw determines what direction the camera is facing. so we need to convert their values to direction vectors using simple triginometric formulas.
+our pitch and yaw determines what direction the camera is facing. so we need to convert their values to direction vectors using simple triginometric formulas.
 
 we also need a strafe direction variable, for moving left and right. This is so we can keep track of where our left and right directions are regardless of where we're facing.
 
-Then the rest is straightforward, we just scale our directions add to our positions based on these variables, and our movement velocity.
+The rest is straightforward, we just scale our directions and add to our positions based on these variables, and our movement velocity.
 
-we add 4 more controls for adjusting our yaw and pitch.
+then we add 4 more controls for adjusting our yaw and pitch.
 
 
-then in our loop we create a target we is just a point in front of the camera. 
+then in our loop we create a target which is just a point in front of the camera. 
 
 lastly we just build our view matrix around everything. the output, our eye position, where the eye is looking at. and what direction is up which is the y axis. 
 
 And we have a working camera. Pretty sick.
 
 
+Now We have to do some code refactoring, cause having everything in just one file, is getting way too chaotic.
+
+
+Don't worry about it tho. We're just making more script files and seperating parts of the code based on concerns.
+
+and look at that we have a much more refined code base. 
+
+Now similar to modern 3d libraries we have a cube class. it has 3 functions one for initializing shaders, another for initializing buffers and a draw function. The first run once at run time the draw runs in our game loop.
+
+I then went on to make a similar class called planes which is just a rectangle, for rendering things like floors and ceilings. It's just one face of a cube so its code is straightforward.
+
+We also have a scene class to house and render all objects of our world.    
+
+A file to store all our global variables, a file for controls, a utility file for functions like compiling shaders and loading textures.
+
+and lastly our main file. 
+
+this is were construct our world objects and run our engine loop.
+
+now  wa can render as many objects as we want.
+
+
+Now when i said i made this from scratch, I literally meant it. This entire structure is written by hand, no blender no nothing, and not because i don't want to, I just dont know how to use these softwares.
+
+I've literally never touched blender in my life.
+
+So it took me like 2 days, but i made something that looked somewhat decent for the video.
+
+After i was done, i noticed the camera felt a little...stiff, like were sliding on ice instead of walking. 
+
+Modern fps games have this sway left and right movement when you move around, they do this to make the movement feel more realistic. 
+
+
+Its actually quite simple how this is done.
+
+We just need a function that adds a bob and sway movement to our camera.
+
+We use delta timme to control the speed.
+
+Ofcourse we only want it to happen when we move.
+
+then we just use sin cos of the variable to create wave like movement up/down left and right. 
+
+we then clone our camera position and add the effect. we then return the new position.
+
+
+then in our game loop we just call the effect, and replace target with the new position.
+
+Now our movements feel alot more alive.
+
+
+It gets just staring at cubes and planes all day. So lets our 3d model. 
+
+I found this cool model of Jesus...my lord and saviour on this website cgtrader, they provide a bunch of really nice models for free, definitely check them out.
 
 
 
-Now to make a proper scene with camera movements and more objects. We have to do some code refactoring, cause having everything in just one file, is getting too chaotic
+Now big question, how the load 3d models.
+
+well 3d models come in different file types. Obj being the most common and the one we'll be using. Its simple, I mean you can literally open it on notepad, and it has everything you need, vertices, UVs, normals etc. 
+
+Except animations you might want to use a different extension for that.
+
+
+So all we need is a model class similar to our cube and planes, but this time we read the vertices and UVs from the obj file rather than hard coding it ourselves. 
+
+The obj data is arranged in a recognizable pattern, so we just use that to extract the numbers.
+
+I'm not sure what the size of the model is, so we won't scale it. 
+
+
+short skit
+
+- Wait, where is it?
+- *JESUS BIG IN THE SKY WITH DRAMATIC MUSIC*
+- *comedic cut*
+- yeah that's way too big.
+
+*fix model size and position it in the room*
+
+- much better.
+
+And now for the final piece of the engine. LIGHTS
+
+
 
 
 

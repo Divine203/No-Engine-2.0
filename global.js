@@ -5,21 +5,27 @@ let texture0Ready = false;
 let texture1Ready = false;
 
 let light = { 
-    color: vec3.fromValues(1, 0.1, 0.2),
-    position: vec3.fromValues(0, 1, 2)
+  color: vec3.fromValues(1, 0.1, 0.2),
+  position: vec3.fromValues(0, 1, 2)
 }
 
 let light2 = { 
-    color: vec3.fromValues(0.9, 0.8, 0.2),
-    position: vec3.fromValues(0, 1, -2)
+  color: vec3.fromValues(0.9, 0.8, 0.2),
+  position: vec3.fromValues(0, 1, -2)
+}
+
+let light3 = { 
+  color: vec3.fromValues(0, 0, 1),
+  position: vec3.fromValues(0, 1, 4)
 }
 
 let isMoving = false;
 
 let lightCube;
 let lightCube2;
+let lightCube3;
 
-let lights  = [light, light2];
+let lights  = [light, light2, light3];
 
 const camera = {
     position: vec3.fromValues(0, .3, 7), // position: [x, y, z]

@@ -64,6 +64,7 @@ let roomWall3Top = new Plane(.3, 1.94, 5, 2, 1, texture2, 0, 0, 0, .7);
 
 lightCube = new Light(light.position[0], light.position[1], light.position[2], .2, .2, .2);
 lightCube2 = new Light(light2.position[0], light2.position[1], light2.position[2], .2, .2, .2, light2.color, light2);
+lightCube3 = new Light(light3.position[0], light3.position[1], light3.position[2], .2, .2, .2, light3.color, light3);
 
 let Jesus = new Model("assets/models/jesus.obj", 0, -.1, -5, goldTexture, .08);
 
@@ -117,7 +118,8 @@ scene.objects = [
     Jesus,
 
     lightCube,
-    lightCube2
+    lightCube2,
+    lightCube3,
 ];
 
 // Set up camera

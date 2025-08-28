@@ -60,7 +60,7 @@ class Light {
 
         // circular light motion
         const radius = 1.4;
-        const speed = this.lightInit == light ? 0.001 : -0.001; // radians per frame
+        const speed = this.lightInit == light ? 0.0012 : -0.0012; // radians per frame
         const angle = performance.now() * speed;
 
         this.position[0] = (Math.cos(angle) * radius) + this.lightInit.position[0];

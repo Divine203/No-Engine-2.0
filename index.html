@@ -24,75 +24,81 @@
     <canvas id="c" width="1200" height="700"></canvas>
 
     <script id="objVertexShader" type="x-shader/x-vertex">
-        #version 300 es 
+        #version 300 es
+        precision mediump float;
+
         in vec3 position;
-        in vec2 textureCoordinate;
         in vec3 normal;
-
-        out vec2 ftextureCoordinate;
-        out vec4 vertexWorldPosition;
-        out vec3 vertexNormal;
-
-        uniform vec3 offsets;
+        in vec2 textureCoordinate;
 
         uniform mat4 modelMatrix;
         uniform mat4 viewMatrix;
         uniform mat4 projectionMatrix;
 
+        out vec3 vFragPos;
+        out vec3 vNormal;
+        out vec2 vTexCoord;   // pass UVs forward
+
         void main() {
-            gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position.x + offsets[gl_InstanceID],position.yz, 1);
-            vertexWorldPosition = modelMatrix * vec4(position.x + offsets[gl_InstanceID],position.yz, 1);
-            ftextureCoordinate = textureCoordinate;
-            // vertexNormal = mat3(modelMatrix) * normal;
-            vertexNormal = mat3(transpose(inverse(modelMatrix))) * normal; // fix normal on scales
+            vec4 worldPos = modelMatrix * vec4(position, 1.0);
+            vFragPos = worldPos.xyz;
+            vNormal = mat3(transpose(inverse(modelMatrix))) * normal;
+            vTexCoord = textureCoordinate;   // keep it alive
+
+            gl_Position = projectionMatrix * viewMatrix * worldPos;
         }
+
     </script>
     <script id="objFragmentShader" type="x-shader/x-fragment">
         #version 300 es
         precision mediump float;
 
-        in vec2 ftextureCoordinate;
-        in vec4 vertexWorldPosition;
-        in vec3 vertexNormal;
+        #define NUM_LIGHTS 2
 
-        uniform sampler2D sampler0;
+        uniform vec3 lightPosition[NUM_LIGHTS];
+        uniform vec3 lightColor[NUM_LIGHTS];
 
-        uniform vec3 lightColor;
-        uniform vec3 lightPosition;
+        uniform vec3 cameraPosition;
 
         uniform vec3 materialAmbient;
         uniform vec3 materialDiffuse;
         uniform vec3 materialSpecular;
-        uniform float materialShininess;    
+        uniform float materialShininess;
 
-        uniform vec3 cameraPosition;
+        uniform sampler2D uTexture;
+
+        in vec3 vFragPos;
+        in vec3 vNormal;
+        in vec2 vTexCoord;
 
         out vec4 finalColor;
 
         void main() {
-            vec3 lightDirection = normalize(lightPosition - vec3(vertexWorldPosition));
-            vec3 viewDirection = normalize(cameraPosition - vec3(vertexWorldPosition));
+            vec3 norm = normalize(vNormal);
+            vec3 viewDir = normalize(cameraPosition - vFragPos);
 
-            vec3 normalizedNormal = normalize(vertexNormal);
+            vec4 texColor = texture(uTexture, vTexCoord);
 
-            // sample texture color
-            vec4 tex = texture(sampler0, ftextureCoordinate);
+            vec3 result = vec3(0.0);
 
-            // Ambient
-            vec3 ambient = materialAmbient * lightColor * tex.rgb;
+            for (int i = 0; i < NUM_LIGHTS; i++) {
+                // Ambient
+                vec3 ambient = 0.1 * materialAmbient * lightColor[i] * texColor.rgb;
 
-            // Diffuse
-            float diff = max(dot(normalizedNormal, lightDirection), 0.0);
-            vec3 diffuse = diff * materialDiffuse * lightColor * tex.rgb;
+                // Diffuse
+                vec3 lightDir = normalize(lightPosition[i] - vFragPos);
+                float diff = max(dot(norm, lightDir), 0.0);
+                vec3 diffuse = diff * materialDiffuse * lightColor[i] * texColor.rgb;
 
-            // Specular
-            vec3 reflectedLightDirection = reflect(-lightDirection, normalizedNormal);
-            float spec = pow(max(dot(reflectedLightDirection, viewDirection), 0.0), materialShininess);
-            vec3 specular = spec * materialSpecular * lightColor;
+                // Specular
+                vec3 reflectDir = reflect(-lightDir, norm);
+                float spec = pow(max(dot(viewDir, reflectDir), 0.0), materialShininess);
+                vec3 specular = spec * materialSpecular * lightColor[i] * texColor.rgb;
 
-            vec3 result = ambient + diffuse + specular;
+                result += ambient + diffuse + specular;
+            }
 
-            finalColor = vec4(result, tex.a);
+            finalColor = vec4(result, 1.0);
         }
 
     </script>
@@ -121,7 +127,7 @@
         out vec4 finalColor;
 
         void main() {
-            finalColor = 10.0 * color;
+            finalColor = color;
         }
     </script>
 
@@ -131,7 +137,7 @@
     <script src="light.js"></script>
     <script src="model.js"></script>
     <script src="cube.js"></script>
-    <script src="plain.js"></script>
+    <script src="plane.js"></script>
     <script src="scene.js"></script>
     <script src="obj.js"></script>
     <script src="main.js"></script>

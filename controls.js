@@ -12,8 +12,8 @@ const K = {
     E: false,
 };
 
-let movVel = 0.075;
-let rotVel = 0.031;
+let movVel = 0.055;
+let rotVel = 0.021;
 
 document.addEventListener('keydown', (e) => {
     switch (e.key) {
@@ -91,7 +91,7 @@ document.addEventListener('keyup', (e) => {
 function applyViewBob(deltaTime) {
     const bobAmount = 0.05;
     const swayAmount = 0.03;
-    
+
     if (isMoving) {
         camera.viewBobTime += deltaTime * 8; // bob speed
     } else {
@@ -115,19 +115,20 @@ const moveCamera = () => {
     camera.direction[1] = Math.sin(camera.pitch);
     camera.direction[2] = Math.cos(camera.pitch) * Math.sin(camera.yaw);
 
-    camera.noYDirection[0] = Math.cos(0) * Math.cos(camera.yaw);
-    camera.noYDirection[1] = Math.sin(0);
-    camera.noYDirection[2] = Math.cos(0) * Math.sin(camera.yaw);
+    camera.noYdirection[0] = Math.cos(0) * Math.cos(camera.yaw);
+    camera.noYdirection[1] = Math.sin(0);
+    camera.noYdirection[2] = Math.cos(0) * Math.sin(camera.yaw);
+
 
     camera.right = vec3.fromValues(-1 * Math.sin(camera.yaw), 0, Math.cos(camera.yaw));
 
     let movementDirection = vec3.create();
     if (K.u) {
-        vec3.scale(movementDirection, camera.noYDirection, movVel);
+        vec3.scale(movementDirection, camera.noYdirection, movVel);
         vec3.add(camera.position, camera.position, movementDirection);
     }
     if (K.d) {
-        vec3.scale(movementDirection, camera.noYDirection, -movVel);
+        vec3.scale(movementDirection, camera.noYdirection, -movVel);
         vec3.add(camera.position, camera.position, movementDirection);
     }
     if (K.l) {

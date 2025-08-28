@@ -99,7 +99,7 @@ a cube for instance, has 6 faces. For each face we have to create 6 vertices, ea
 
 *sarcastic baby tone voice lol* => "But Divine, a square has 4 points not 6". 
 
-Well the GPU only understands triangles. A square can be divided into 2 triangles with 3 vertices each, making 6 for one face of the cube. 
+Yes, but sadly the GPU only understands triangles. A square can be divided into 2 triangles with 3 vertices each, making 6 for one face of the cube. 
 
 We unfortunately have to account for all 6 even if some of the values are repeated. You complete idio...
 
@@ -144,7 +144,7 @@ This is also where we apply our model matrix.
 
 Outside the function, we create the cube, 
 
-set up out view matrix and projection matrix
+set up our view matrix and projection matrix
 
 then use this function to apply our perspective. 
 
@@ -208,7 +208,9 @@ we create a velocity variable for speed.
 
 then we create a function that makes changes to the variables based on the key presses.
 
-our pitch and yaw determines what direction the camera is facing. so we need to convert their values to direction vectors using simple triginometric formulas.
+our pitch and yaw determines what direction the camera is facing. so we need to convert their values to direction vectors using simple triginometric formulas. 
+
+But instead of adding the pitch, we'll actually leave it as 0. If we don't then we'll be flying upwards when we look up, which isn't how...well, walking works.
 
 we also need a strafe direction variable, for moving left and right. This is so we can keep track of where our left and right directions are regardless of where we're facing.
 
@@ -248,20 +250,20 @@ now  wa can render as many objects as we want.
 
 Now when i said i made this from scratch, I literally meant it. This entire structure is written by hand, no blender no nothing, and not because i don't want to, I just dont know how to use these softwares.
 
-I've literally never touched blender in my life.
+I've literally never touched blender before in my life.
 
 So it took me like 2 days, but i made something that looked somewhat decent for the video.
 
 After i was done, i noticed the camera felt a little...stiff, like were sliding on ice instead of walking. 
 
-Modern fps games have this sway left and right movement when you move around, they do this to make the movement feel more realistic. 
+Modern fps games have this sway left and right movement when you move around, they do this to make the movement feel more realistic, like your really walking
 
 
-Its actually quite simple how this is done.
+And Its actually quite simple how this is done.
 
 We just need a function that adds a bob and sway movement to our camera.
 
-We use delta timme to control the speed.
+We use delta time to control the speed.
 
 Ofcourse we only want it to happen when we move.
 
@@ -275,13 +277,13 @@ then in our game loop we just call the effect, and replace target with the new p
 Now our movements feel alot more alive.
 
 
-It gets just staring at cubes and planes all day. So lets our 3d model. 
+It gets boring just staring at cubes and planes all day. So lets add a 3d model. 
 
-I found this cool model of Jesus...my lord and saviour on this website cgtrader, they provide a bunch of really nice models for free, definitely check them out.
+I found this cool model of Jesus...my lord and saviour on this website cgtrader, they provide a bunch of really nice models for free, so definitely check them out.
 
 
 
-Now big question, how the load 3d models.
+Now big question, how to load 3d models.
 
 well 3d models come in different file types. Obj being the most common and the one we'll be using. Its simple, I mean you can literally open it on notepad, and it has everything you need, vertices, UVs, normals etc. 
 
@@ -292,7 +294,7 @@ So all we need is a model class similar to our cube and planes, but this time we
 
 The obj data is arranged in a recognizable pattern, so we just use that to extract the numbers.
 
-I'm not sure what the size of the model is, so we won't scale it. 
+I'm not sure what the size of the model is, so we won't scale it just yet.
 
 
 short skit
@@ -308,9 +310,51 @@ short skit
 
 And now for the final piece of the engine. LIGHTS
 
+This involves something called the Phong lighting model. 
+
+there is the Ambient light which is just the room's light color, diffuse light, which is direct light hitting a surface and secular light, which is this shiny highlights you're seeing.
+
+Every vertex has a normal, which is a vector perpendicular to its surface. Its to tell us whether a surface is facing towards the light source or not.
+
+The concept of light itself is simply multiplying colors. If a red light hits a blue surface, nothing shows, cause both colors cancel out. If red light hits a red surface, we just get red and thats essentially the gist.
 
 
+First of all, Our light sources wont be affected by light themselves, cause well...they're the bloody light. 
+
+So we need a seperate set of shaders for our light sources, one that won't have any ambient, diffuse or secular variables, not even a texture, just a color is fine.
 
 
+In JS we create a seperate class called light, which is essentially just another cube, but we use these new shaders instead.
 
+We also need a variable for out light source, its color and initial position.
+
+then we can create materials that react differently to our light source, like gold and plastic.
+
+Next we need the normals of all vertices. 
+
+models already have them in their obj file so we just extract them like the rest. But for cubes and planes we need to write them by hand.
+
+Its very simple, the front face is Z+1, the back face is Z-1, left x-1, right x+1, top y-1 and bottom y+1.
+
+For planes its just z+1, the front face.
+
+Then we just need to send all our light specifics along with the normal vector to the shaders.
+
+
+The shaders is where we will do the lighting calculations.
+
+we first need to send the world position of our vector. Which is where the hell it actually is in our world, and also its normal vector.
+
+
+And we calculate them like this...*shows code*
+
+in our fragment shader we get those 2 variables, as well as the light specifics of that object.
+
+Next we need the light direction which is where the light is coming from, and the view direction which is where the camera is facing from.
+
+we convert our normal vector to a unit vector, to make sure its always 1.
+
+Then we just need to apply the classic Phong lighting formulas, for the ambient, diffuse and specular light. The resulting color being the combination of all 3.
+
+And voila, we have lighting.
 

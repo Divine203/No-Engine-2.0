@@ -91,9 +91,10 @@ class Cube {
         gl.useProgram(this.shaderProgram);
         gl.bindVertexArray(this.vao);
 
-        gl.uniform3fv(this.lightColorLocation, light.color);
-        gl.uniform3fv(this.lightPositionLocation, lightCube.position);
-        gl.uniform3fv(this.cameraPositionLocation, camera.position);
+        gl.uniform3fv(this.lightColorLocation, new Float32Array([...light.color, ...light2.color]));
+        gl.uniform3fv(this.lightPositionLocation, new Float32Array([...lightCube.position, ...lightCube2.position]));
+        gl.uniform3fv(this.cameraPositionLocation, new Float32Array(camera.position));
+
 
         gl.uniform3fv(this.materialAmbientLocation, this.material.ambient);
         gl.uniform3fv(this.materialDiffuseLocation, this.material.diffuse);

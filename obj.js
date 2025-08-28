@@ -99,7 +99,7 @@ const cubeNormals = [
 ];
 
 
-const plainVertices = [
+const planeVertices = [
   -0.5, -0.5, 0.5,  // bottom-left
   0.5, -0.5, 0.5,  // bottom-right
   0.5, 0.5, 0.5,  // top-right
@@ -108,7 +108,7 @@ const plainVertices = [
   -0.5, -0.5, 0.5,
 ];
 
-const plainNormals = [
+const planeNormals = [
   0, 0, 1,
   0, 0, 1,
   0, 0, 1,

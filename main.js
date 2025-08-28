@@ -32,8 +32,8 @@ let roofPillarSlantRight = new Cube(2.8, 1.13, -9, .3, 1.9, .6, texture4, 0, 0, 
 
 let mainRoofBind = new Cube(.3, 1.5, -9, 3.5, .45, .25, texture4);
 
-let centerLeftWall = new Plain(-1.15, .35, -11.6, 5, 2, texture2, 0, 1.55, 0, .7);
-let centerRightWall = new Plain(.8, .35, -11.6, 5, 2, texture2, 0, 1.55, 0, .7);
+let centerLeftWall = new Plane(-1.15, .35, -11.6, 5, 2, texture2, 0, 1.55, 0, .7);
+let centerRightWall = new Plane(.8, .35, -11.6, 5, 2, texture2, 0, 1.55, 0, .7);
 
 let doorEdgeTop = new Cube(.15, 1.5, 5.5, 2, .2, .2, texture4);
 let doorEdgeLeft = new Cube(1, .37, 5.5, .2, 2, .2, texture4);
@@ -45,24 +45,25 @@ let box3 = new Cube(3, -.17, 5.8, .3, .3, .3, boxTexture1, 0, 0, 0, 3.3);
 let box4 = new Cube(-2, 0, -7, 1.3, 1.3, 1.3, metal1, 0, 0, 0, 1.3);
 // first room
 
-let floor1 = new Plain(0, -1, -9, 8, 40, texture1, -1.58, 0, 0, .7);
-let leftWall1 = new Plain(-3.5, 0, -9, 40, 2, texture2, 0, 1.55, 0, .7);
-let leftRoof1 = new Plain(-2.6, 2, -9, 40, 2, texture3, .9, 1.55, 0, .7);
-let upRoof1 = new Plain(.5, 2.3, -9, 5, 40, texture3B, 1.55, 0, 0, .7);
-let rightRoof1 = new Plain(2.8, 2, -9, 40, 3, texture3B, 2, 1.6, 0, .7);
+let floor1 = new Plane(0, -1, -9, 8, 40, texture1, -1.58, 0, 0, .7);
+let leftWall1 = new Plane(-3.5, 0, -9, 40, 2, texture2, 0, 1.55, 0, .7);
+let leftRoof1 = new Plane(-2.6, 2, -9, 40, 2, texture3, .9, 1.55, 0, .7);
+let upRoof1 = new Plane(.5, 2.3, -9, 5, 40, texture3B, 1.55, 0, 0, .7);
+let rightRoof1 = new Plane(2.8, 2, -9, 40, 3, texture3B, 2, 1.6, 0, .7);
 
-let rightWall1 = new Plain(4.3, 0, -9, 40, 3, texture2, 0, -1.6, 0, .7);
+let rightWall1 = new Plane(4.3, 0, -9, 40, 3, texture2, 0, -1.6, 0, .7);
 
-let centerLeftRoof = new Plain(-.4, 1.9, -11.6, 4.6, 1.1, texture3B, 1.1, 1.55, 0, .7);
-let centerRightRoof = new Plain(1, 1.9, -11.6, 4.6, 1.5, texture3B, 1.1, -1.55, 0, .7);
+let centerLeftRoof = new Plane(-.4, 1.9, -11.6, 4.6, 1.1, texture3B, 1.1, 1.55, 0, .7);
+let centerRightRoof = new Plane(1, 1.9, -11.6, 4.6, 1.5, texture3B, 1.1, -1.55, 0, .7);
 
-let backWall = new Plain(0, .8, -14, 8, 3, texture2, 0, 0, 0, .7);
-let frontWall = new Plain(-.4, .8, 10.2, 8, 3, texture2, 0, 0, 0, .7);
-let roomWall1 = new Plain(-2, .8, 5, 2.6, 3, texture2, 0, 0, 0, .7);
-let roomWall2 = new Plain(2.3, .8, 5, 2.6, 3, texture2, 0, 0, 0, .7);
-let roomWall3Top = new Plain(.3, 1.94, 5, 2, 1, texture2, 0, 0, 0, .7);
+let backWall = new Plane(0, .8, -14, 8, 3, texture2, 0, 0, 0, .7);
+let frontWall = new Plane(-.4, .8, 10.2, 8, 3, texture2, 0, 0, 0, .7);
+let roomWall1 = new Plane(-2, .8, 5, 2.6, 3, texture2, 0, 0, 0, .7);
+let roomWall2 = new Plane(2.3, .8, 5, 2.6, 3, texture2, 0, 0, 0, .7);
+let roomWall3Top = new Plane(.3, 1.94, 5, 2, 1, texture2, 0, 0, 0, .7);
 
 lightCube = new Light(light.position[0], light.position[1], light.position[2], .2, .2, .2);
+lightCube2 = new Light(light2.position[0], light2.position[1], light2.position[2], .2, .2, .2, light2.color, light2);
 
 let Jesus = new Model("assets/models/jesus.obj", 0, -.1, -5, goldTexture, .08);
 
@@ -115,7 +116,8 @@ scene.objects = [
 
     Jesus,
 
-    lightCube
+    lightCube,
+    lightCube2
 ];
 
 // Set up camera
@@ -133,9 +135,8 @@ function animate() {
 
     const up = vec3.fromValues(0, 1, 0); // Y axis is up
 
-
     let target = vec3.create();
-    vec3.add(target, camera.position, camera.direction);
+    vec3.add(target, camera.position, camera.noYdirection);
     const renderPos = applyViewBob(deltaTime);
     mat4.lookAt(viewMatrix, renderPos, vec3.add(vec3.create(), renderPos, camera.direction), up);
 

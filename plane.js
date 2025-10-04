@@ -1,4 +1,4 @@
-class Plain {
+class Plane {
     constructor(x, y, z, w, h, texture1, rx = 0, ry = 0, rz = 0, rpu = .7) { // rpu = repeate per unit
         this.position = vec3.fromValues(x, y, z);
         this.size = vec3.fromValues(w, h, 1);
@@ -39,8 +39,8 @@ class Plain {
     }
 
     initBuffers() {
-        this.vertices = [...plainVertices];
-        this.normals = [...plainNormals];
+        this.vertices = [...planeVertices];
+        this.normals = [...planeNormals];
 
         // How many times to repeat per unit
         let repeatPerUnit = this.rpu; // tile per 1 unit length
@@ -102,9 +102,9 @@ class Plain {
         gl.useProgram(this.shaderProgram);
         gl.bindVertexArray(this.vao);
 
-        gl.uniform3fv(this.lightColorLocation, light.color);
-        gl.uniform3fv(this.lightPositionLocation, lightCube.position);
-        gl.uniform3fv(this.cameraPositionLocation, camera.position);
+        gl.uniform3fv(this.lightColorLocation, new Float32Array([...light.color, ...light2.color, ...light3.color]));
+        gl.uniform3fv(this.lightPositionLocation, new Float32Array([...lightCube.position, ...lightCube2.position, ...lightCube3.position]));
+        gl.uniform3fv(this.cameraPositionLocation, new Float32Array(camera.position));
 
         gl.uniform3fv(this.materialAmbientLocation, this.material.ambient);
         gl.uniform3fv(this.materialDiffuseLocation, this.material.diffuse);

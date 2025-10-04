@@ -1,10 +1,12 @@
 class Light {
-    constructor(x, y, z, w, h, d, color = light.color) {
+    constructor(x, y, z, w, h, d, color = light.color, lightInit = light) {
         this.position = vec3.fromValues(x, y, z);
         this.size = vec3.fromValues(w, h, d);
         this.modelMatrix = mat4.create();
 
-        this.color = [light.color[0], light.color[1], light.color[2]];
+        this.color = [color[0], color[1], color[2]];
+
+        this.lightInit = lightInit;
 
         this.initShaders();
         this.initBuffers();
@@ -57,14 +59,71 @@ class Light {
         gl.uniform4fv(this.colorLocation, [...this.color, 1.0]);
 
         // circular light motion
-        const radius = 2.4;
-        const speed = 0.001; // radians per frame
+        const radius = 1.4;
+        const speed = this.lightInit == light ? 0.0012 : -0.0012; // radians per frame
         const angle = performance.now() * speed;
 
-        this.position[0] = (Math.cos(angle) * radius) + light.position[0];
-        this.position[2] = (Math.sin(angle) * radius) + light.position[2];
+        this.position[0] = (Math.cos(angle) * radius) + this.lightInit.position[0];
+        this.position[2] = (Math.sin(angle) * radius) + this.lightInit.position[2];
 
 
         gl.drawArrays(gl.TRIANGLES, 0, this.vertices.length / 3);
     }
 }
+
+
+
+/*
+
+  <script id="objFragmentShader" type="x-shader/x-fragment">
+        #version 300 es
+        precision mediump float;
+
+        in vec2 ftextureCoordinate;
+        in vec4 vertexWorldPosition;
+        in vec3 vertexNormal;
+
+        uniform sampler2D sampler0;
+
+        uniform vec3 lightColor;
+        uniform vec3 lightPosition;
+
+        uniform vec3 materialAmbient;
+        uniform vec3 materialDiffuse;
+        uniform vec3 materialSpecular;
+        uniform float materialShininess;    
+
+        uniform vec3 cameraPosition;
+
+        out vec4 finalColor;
+
+        void main() {
+            vec3 lightDirection = normalize(lightPosition - vec3(vertexWorldPosition));
+            vec3 viewDirection = normalize(cameraPosition - vec3(vertexWorldPosition));
+
+            vec3 normalizedNormal = normalize(vertexNormal);
+
+            // sample texture color
+            vec4 tex = texture(sampler0, ftextureCoordinate);
+
+            // Ambient
+            vec3 ambient = materialAmbient * lightColor * tex.rgb;
+
+            // Diffuse
+            float diff = max(dot(normalizedNormal, lightDirection), 0.0);
+            vec3 diffuse = diff * materialDiffuse * lightColor * tex.rgb;
+
+            // Specular
+            vec3 reflectedLightDirection = reflect(-lightDirection, normalizedNormal);
+            float spec = pow(max(dot(reflectedLightDirection, viewDirection), 0.0), materialShininess);
+            vec3 specular = spec * materialSpecular * lightColor;
+
+            vec3 result = ambient + diffuse + specular;
+
+            finalColor = vec4(result, tex.a);
+        }
+
+    </script>
+
+
+*/
